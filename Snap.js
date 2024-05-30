@@ -20,7 +20,7 @@ export function Snap(_ctx){
     this.end = function (l){
         l.end(x,y);
     }
-    this.newLine = function (){
-        return (new Line(x,y,ctx,this));
+    this.newLine = function (sel){
+        return (new Line(x,y,ctx,this,sel,snapRad));
     }
 }

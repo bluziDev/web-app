@@ -1,32 +1,63 @@
-import {board} from './app.js';
 
-export function Line(_x1,_y1,_ctx,_snap){
-    var x1=_x1;
-    var x2=_x1;
-    var y1=_y1;
-    var y2=_y1;
-    var ctx = _ctx;
-    var snapO = _snap;
-    var snapRad = 10;
-    this.draw = function(){
+import {nearestOnLine} from './nearestOnLine.js';
+
+export function Line(x1,y1,ctx,snap,sel,snapRad){
+    var x2=x1;
+    var y2=y1;
+    var selRad = 10;
+    this.draw = function(mX,mY,div){
         ctx.moveTo(x1, y1); 
         ctx.lineTo(x2, y2);
+        
     }
     this.canSnap = function(_x,_y){
         return (x1 != _x || y1 != _y);
     }
     this.snap = function(mX,mY,d,isD){
-        let mDis1 = Math.hypot(mX-x1,mY-y1);
+        var nearest = nearestOnLine(
+                          {x: mX, y: mY}
+                         ,{x: x1, y: y1}
+                         ,{x: x2, y: y2}
+                      );
+        let mDis = Math.hypot(mX-nearest.x,mY-nearest.y);
 
-        if (mDis1<=snapRad && (d.canSnap(x1,y1)|| !isD)){
-            snapO.set(x1,y1,false);
+        if (mDis<=snapRad && (d.canSnap(nearest.x,nearest.y)|| !isD)){
+            snap.set(nearest.x,nearest.y,false);
+            return true;
         }
         else{
-            let mDis2 = Math.hypot(mX-x2,mY-y2);
-            if (mDis2<=snapRad && (d.canSnap(x2,y2) || !isD)){
-                snapO.set(x2,y2,false);
-            }
+            return false;
         }
+    }
+    this.select = function (mX,mY){
+        var nearest = nearestOnLine(
+            {x: mX, y: mY}
+           ,{x: x1, y: y1}
+           ,{x: x2, y: y2}
+        );
+        let mDis = Math.hypot(mX-nearest.x,mY-nearest.y);
+
+        if (mDis<=selRad){
+            sel.set(this);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    this.drawSelection = function(lineWidth,lineColor){
+        let prevLW = ctx.lineWidth;
+        let prevLC = ctx.strokeStyle;
+        ctx.stroke();
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = lineColor;
+        ctx.beginPath();
+        ctx.moveTo(x1,y1);
+        ctx.lineTo(x2,y2);
+        ctx.stroke();
+        ctx.lineWidth = prevLW;
+        ctx.strokeStyle = prevLC;
+        ctx.beginPath();
     }
     this.end = function(sX,sY){
         x2 = sX;
