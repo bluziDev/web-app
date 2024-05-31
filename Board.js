@@ -1,5 +1,6 @@
 import {Snap} from './Snap.js';
 import { Selection } from './Selection.js';
+import { LineMenu } from './LineMenu.js';
 
 export function Board(_canvas,_ctx,_div){
     var canvas = _canvas;
@@ -12,7 +13,9 @@ export function Board(_canvas,_ctx,_div){
     div.appendChild(btn);
     var tool = 'draw';
     btn.innerHTML = 'tool: ' + tool;
-    btn.id = 'button';
+    btn.class = "c";
+    //btn.style.top = '15px';
+    //btn.id = 'button';
     btn.addEventListener('click', () => {
         if (tool == 'draw' && !isDrawing){
             tool = 'select';
@@ -30,6 +33,7 @@ export function Board(_canvas,_ctx,_div){
     var drawing;
     var snap = new Snap(ctx);
     var sel = new Selection(ctx);
+    var lMenu = new LineMenu(div, this, sel);
     this.draw = function(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.beginPath();
@@ -66,7 +70,7 @@ export function Board(_canvas,_ctx,_div){
             }
         }
         else{
-            sel.removeLine();
+            sel.toggle(lMenu);
         }
     }
     this.handleMouseMove = function(e){

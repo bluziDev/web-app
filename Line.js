@@ -59,6 +59,9 @@ export function Line(x1,y1,ctx,snap,sel,snapRad){
         ctx.strokeStyle = prevLC;
         ctx.beginPath();
     }
+    this.pose = function(actor){
+        actor.pose({a:{x:x1, y:y1}, b:{x:x2, y:y2}});
+    }
     this.end = function(sX,sY){
         x2 = sX;
         y2 = sY;
