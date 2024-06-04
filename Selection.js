@@ -1,15 +1,26 @@
-import {board} from './app.js';
+//import {board} from './app.js';
+import {Menu} from './Menus/Line.js';
 
-export function Selection(ctx){
+export function Selection(ctx,div,board){
     var lineWidth = 4;
     var lineColor = 'Orchid';
     var free = true;
     var locked = false;
     var line;
-    this.draw = function (){
-        if (!free){
-            line.drawSelection(lineWidth,lineColor);
-        }
+    var menu = new Menu(div,board,this)
+    this.draw = function(a,b){
+        let prevLW = ctx.lineWidth;
+        let prevLC = ctx.strokeStyle;
+        ctx.stroke();
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = lineColor;
+        ctx.beginPath();
+        ctx.moveTo(a.x,a.y);
+        ctx.lineTo(b.x,b.y);
+        ctx.stroke();
+        ctx.lineWidth = prevLW;
+        ctx.strokeStyle = prevLC;
+        ctx.beginPath();
     }
     this.set = function(l){
         if (!locked){
@@ -27,15 +38,15 @@ export function Selection(ctx){
             board.removeLine(line);
         }
     }*/
-    this.toggle = function(lMenu){
+    this.toggle = function(){
         if (!locked){
             if (!free){
-                lMenu.open(line);
+                menu.open(line);
                 locked = true;
             }
         }
         else{
-            lMenu.close();
+            menu.close();
             locked = false;
         }
     }

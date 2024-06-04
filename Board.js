@@ -1,6 +1,5 @@
 import {Snap} from './Snap.js';
 import { Selection } from './Selection.js';
-import { LineMenu } from './LineMenu.js';
 
 export function Board(_canvas,_ctx,_div){
     var canvas = _canvas;
@@ -8,22 +7,21 @@ export function Board(_canvas,_ctx,_div){
     var div = _div;
     var mX = 0;
     var mY = 0;
-    //test button
-    var btn = document.createElement("BUTTON");
-    div.appendChild(btn);
+    //tool bar
     var tool = 'draw';
-    btn.innerHTML = 'tool: ' + tool;
-    btn.class = "c";
     //btn.style.top = '15px';
     //btn.id = 'button';
-    btn.addEventListener('click', () => {
-        if (tool == 'draw' && !isDrawing){
-            tool = 'select';
-        }else
-        if (tool == 'select'){
-            tool = 'draw';
-        }
-        btn.innerHTML = 'tool: ' + tool;
+    var bDraw = document.getElementById('Draw');
+    var bSel = document.getElementById('Select');
+    var bRemove = document.getElementById('Remove');
+    bDraw.addEventListener('click', () => {
+        tool = 'draw';
+    });
+    bSel.addEventListener('click', () => {
+        tool = 'select';
+    });
+    bRemove.addEventListener('click', () => {
+        tool = 'remove';
     });
     //lines
     var maxLines = 1000;
@@ -32,24 +30,23 @@ export function Board(_canvas,_ctx,_div){
     var isDrawing = false;
     var drawing;
     var snap = new Snap(ctx);
-    var sel = new Selection(ctx);
-    var lMenu = new LineMenu(div, this, sel);
+    var sel = new Selection(ctx,div,this);
+    //var lMenu = new LineMenu(div, this, sel);
     this.draw = function(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.beginPath();
-        sel.draw();
         snap.set(mX,mY,true);
         sel.free();
         let foundSnap = false;
         let foundSel = false;
         lines.forEach((element,index) => {
-            element.draw(mX,mY,div);
             if (!foundSnap && tool == 'draw'){
                 foundSnap = element.snap(mX,mY,drawing,isDrawing);
             }else
             if(!foundSel && tool == 'select'){
                 foundSel = element.select(mX,mY);
             }
+            element.draw(mX,mY,div);
         });
         if (isDrawing){
             snap.end(drawing);
@@ -70,7 +67,7 @@ export function Board(_canvas,_ctx,_div){
             }
         }
         else{
-            sel.toggle(lMenu);
+            sel.toggle();
         }
     }
     this.handleMouseMove = function(e){

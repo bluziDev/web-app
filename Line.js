@@ -39,25 +39,12 @@ export function Line(x1,y1,ctx,snap,sel,snapRad){
 
         if (mDis<=selRad){
             sel.set(this);
+            sel.draw({x: x1, y: y1},{x: x2, y: y2});
             return true;
         }
         else{
             return false;
         }
-    }
-    this.drawSelection = function(lineWidth,lineColor){
-        let prevLW = ctx.lineWidth;
-        let prevLC = ctx.strokeStyle;
-        ctx.stroke();
-        ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = lineColor;
-        ctx.beginPath();
-        ctx.moveTo(x1,y1);
-        ctx.lineTo(x2,y2);
-        ctx.stroke();
-        ctx.lineWidth = prevLW;
-        ctx.strokeStyle = prevLC;
-        ctx.beginPath();
     }
     this.pose = function(actor){
         actor.pose({a:{x:x1, y:y1}, b:{x:x2, y:y2}});
