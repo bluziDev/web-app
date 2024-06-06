@@ -5,10 +5,17 @@ export function Line(x1,y1,ctx,snap,sel,snapRad){
     var x2=x1;
     var y2=y1;
     var selRad = 10;
+    var selected = false;
     this.draw = function(mX,mY,div){
+        if (selected){
+            sel.draw({x: x1, y: y1},{x: x2, y: y2},this);
+        }
         ctx.moveTo(x1, y1); 
         ctx.lineTo(x2, y2);
         
+    }
+    this.deselect = function(){
+        selected = false;
     }
     this.canSnap = function(_x,_y){
         return (x1 != _x || y1 != _y);
@@ -39,10 +46,12 @@ export function Line(x1,y1,ctx,snap,sel,snapRad){
 
         if (mDis<=selRad){
             sel.set(this);
-            sel.draw({x: x1, y: y1},{x: x2, y: y2});
+            selected = true;
+            //sel.draw({x: x1, y: y1},{x: x2, y: y2});
             return true;
         }
         else{
+            selected = false;
             return false;
         }
     }

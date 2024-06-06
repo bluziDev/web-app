@@ -8,19 +8,21 @@ export function Selection(ctx,div,board){
     var locked = false;
     var line;
     var menu = new Menu(div,board,this)
-    this.draw = function(a,b){
-        let prevLW = ctx.lineWidth;
-        let prevLC = ctx.strokeStyle;
-        ctx.stroke();
-        ctx.lineWidth = lineWidth;
-        ctx.strokeStyle = lineColor;
-        ctx.beginPath();
-        ctx.moveTo(a.x,a.y);
-        ctx.lineTo(b.x,b.y);
-        ctx.stroke();
-        ctx.lineWidth = prevLW;
-        ctx.strokeStyle = prevLC;
-        ctx.beginPath();
+    this.draw = function(a,b,l){
+        if (line == l){
+            let prevLW = ctx.lineWidth;
+            let prevLC = ctx.strokeStyle;
+            ctx.stroke();
+            ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = lineColor;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+            ctx.lineWidth = prevLW;
+            ctx.strokeStyle = prevLC;
+            ctx.beginPath();
+        }
     }
     this.set = function(l){
         if (!locked){
@@ -49,5 +51,6 @@ export function Selection(ctx,div,board){
             menu.close();
             locked = false;
         }
+        return locked;
     }
 }

@@ -14,20 +14,26 @@ export function Board(_canvas,_ctx,_div){
     var bDraw = document.getElementById('Draw');
     var bSel = document.getElementById('Select');
     var bRemove = document.getElementById('Remove');
+    this.changeTool = function(t){
+        if (!isDrawing && !isChanging){
+            tool = t;
+        }
+    }
     bDraw.addEventListener('click', () => {
-        tool = 'draw';
+        this.changeTool('draw');
     });
     bSel.addEventListener('click', () => {
-        tool = 'select';
+        this.changeTool('select');
     });
     bRemove.addEventListener('click', () => {
-        tool = 'remove';
+        this.changeTool('remove');
     });
     //lines
     var maxLines = 1000;
     var maxUndos = 5;
     var lines = [];
     var isDrawing = false;
+    var isChanging = false;
     var drawing;
     var snap = new Snap(ctx);
     var sel = new Selection(ctx,div,this);
@@ -43,7 +49,7 @@ export function Board(_canvas,_ctx,_div){
             if (!foundSnap && tool == 'draw'){
                 foundSnap = element.snap(mX,mY,drawing,isDrawing);
             }else
-            if(!foundSel && tool == 'select'){
+            if(!foundSel && tool == 'select' && !isChanging){
                 foundSel = element.select(mX,mY);
             }
             element.draw(mX,mY,div);
@@ -56,6 +62,7 @@ export function Board(_canvas,_ctx,_div){
         ctx.stroke();
     }
     this.handleClick = function(e){
+        //click on the canvas
         if (tool == 'draw'){
             if (isDrawing){
                 lines.push(drawing);
@@ -67,6 +74,7 @@ export function Board(_canvas,_ctx,_div){
             }
         }
         else{
+            isChanging = !isChanging;
             sel.toggle();
         }
     }
